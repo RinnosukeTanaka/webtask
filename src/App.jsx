@@ -101,7 +101,9 @@ function App(){
             data.address.town || 
             data.address.village || 
             data.address.state;
-          
+            
+          console.log("cityName:", cityName); 
+          console.log("API_KEY:", API_KEY);
           return fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric&lang=ja`);  
         })
         .then((res)=>res.json())
