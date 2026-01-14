@@ -92,22 +92,24 @@ function App(){
 
   useEffect(()=> {
     if(lat &&lon) {
-      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=ja`)
+      fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
+        .then((res)=>res.json())
+        .then((data)=>{
+          setLocationInfo(data.address);
+          const cityName = 
+            data.address.city || 
+            data.address.town || 
+            data.address.village || 
+            data.address.state;
+          
+          return fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric&lang=ja`);  
+        })
         .then((res)=>res.json())
         .then((data)=>{
           setWeather(data);
         })
         .catch(()=>{
           setError("天気情報の取得に失敗しました");
-        });
-      
-      fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
-        .then((res)=>res.json())
-        .then((data)=>{
-          setLocationInfo(data.address);
-        })
-        .catch(()=>{
-          setError("住所情報の取得に失敗しました");
         });
     }
   },[lat, lon]);
